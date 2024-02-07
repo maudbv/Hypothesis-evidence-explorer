@@ -38,7 +38,6 @@ source("resources/functions/app_helper.R")
 # Load plotting functions ####
 source("resources/functions/plot_chrono.R")
 source("resources/functions/plot_piechart.R")
-source("resources/functions/plot_radialplots.R")
 source("resources/functions/plot_barplot.R")
 
 
@@ -168,6 +167,12 @@ ui <- bootstrapPage(
 # Server:   ####
 
 server <- function(input, output, session) {
+  
+# overview figure
+  output$overview_piechart <- renderPlotly( {
+    req(total_df())
+    plot_piechart(total_df())
+  })
   
  # Conditional filter selection
     hyp_taxa <- reactive({
