@@ -25,8 +25,6 @@ library(visNetwork)
 # import and pre-process data ####
 source("resources/Hypothesis index.R")
 source('resources/data processing.R')
-source("resources/hyp_network_viz/tripartite topdown network.R")
-# source("resources/functions/plot_network.R")
 
 # Get colours and style themes ####
 source("resources/ggplot_HiK_theme.R")
@@ -38,21 +36,22 @@ source("resources/functions/app_helper.R")
 source("resources/functions/plot_chrono.R")
 source("resources/functions/plot_piechart.R")
 source("resources/functions/plot_barplot.R")
-source("resources/functions/plot_piechart_overview.R")
+source("resources/functions/plot_overview.R")
 
 
 # User Interface ####
 ui <- bootstrapPage(
-  navbarPage(theme = shinytheme("flatly"),
+  navbarPage(theme = shinytheme("paper"),
              collapsible = TRUE,
-             HTML('<a style="text-decoration:none;cursor:default;color:#FFFFFF;" class="active" href="#">Hypotheses in Invasion Biology</a>'),
+             HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">Evidence for hypotheses in Invasion Biology</a>'),
              id="nav",
              windowTitle = "Exploring hypotheses in Invasion Biology",
              
              
              # First page: dashboard for all hypotheses
              tabPanel("Overview of hypotheses",
-                         plotOutput('overview_piechart', height = "800px")
+                      div(plotlyOutput('overview_chart', height = "800px"), style = 'max-width: 1200px;'),
+                      tags$head(tags$style(type="text/css", ".container-fluid {  max-width: 1200px; /* or 950px */}"))
                      ),
 
              # second page: Interactive exploration of evidence supporting individual hyps
@@ -93,7 +92,8 @@ ui <- bootstrapPage(
                           
                             # Panel 1: support for the hypothesis
                            tabPanel("Support for the hypothesis",
-                                    tags$br(),
+                                    div(
+                                      tags$br(),
                                     h3(textOutput("hyp_description")),
                                     fluidRow(
                                       column(plotlyOutput('support_piechart', height = "200px"),
@@ -105,12 +105,15 @@ ui <- bootstrapPage(
                                     fluidRow(plotOutput('chronology'),
                                              width = "95%",
                                              height = "100%"),
-                                    tags$br()
+                                    tags$br(),
+                                    style = 'max-width: 1200px;'
+                                    )
+                                    
                            ),
                            
                            # Panel 2: Filtered data table
                            tabPanel("Distribution",  
-                                     
+                                   div(  
                                     fluidRow( 
                                       column(plotlyOutput("support_habitats"),
                                              width = 10,
@@ -127,33 +130,28 @@ ui <- bootstrapPage(
                                       column(plotlyOutput("support_continents"),
                                              width = 10,
                                              height = 5)),
-                                    tags$br()
+                                    tags$br(),
+                                    style = 'max-width: 1200px;'
+                                   )
                            ),
                            
                            # Panel 2: Filtered data table
                            tabPanel("Data",  
-                           DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
+                                    
+                           div(
+                             DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
+                             ,
+                             style = 'max-width: 10000px;'
+                           )
                            )
                           )
                         )
                       )
              ),
-             # second page: network visualization
-            tabPanel("Conceptual scheme",
-                     mainPanel(visNetworkOutput("tripartite_network",width = "auto",height = "700px"),
-                               tags$br(),
-                               HTML('<a style="text-decoration:none;cursor:default;color:#808080" href="#">Hierarchical scheme illustrating the distribution of hypotheses among nine major research questions and four themes in invasion biology. The network is based on ongoing expert assessment and classification of hypotheses within the enKORE project</a>'),
-                               tags$br()
-                      )
-                     ),
-
+           
              # Third page: about the project
              tabPanel("About the project",
-                      "This is a beta version of interactive visualiaztions for the enKORE project, funded by the Volkswagen Stiftung, Germany.",
-                      tags$br(),
-                      tags$br(),
-                      'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. It also integrates data from the 2020 article by Enders et al. which can be found here:', tags$a(href="https://doi.org/10.1111/geb.13082", "https://doi.org/10.1111/geb.13082"),'.'
-             )
+                      'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.')
   )
 )
 
@@ -163,8 +161,8 @@ ui <- bootstrapPage(
 server <- function(input, output, session) {
   
 # overview figure
-  output$overview_piechart <- renderPlot( {
-    plot_piechart_overview (total_df)
+  output$overview_chart <- renderPlotly( {
+    plot_overview (total_df)
   })
   
  # Conditional filter selection
@@ -306,18 +304,7 @@ server <- function(input, output, session) {
  )
  
   },            server = FALSE)
-  
-  # Martin's network
-  output$martin_network <- renderVisNetwork({
-    plot_martin_network(nodes_martin, edges_martin)
-  })
-  
-  # tripartite network of hypotheses
-  output$tripartite_network<- renderVisNetwork({
-    plot_3L_network(nodes_3L, edges_3L)
-  })
 }
-
-
-
+  
+ 
 shinyApp(ui = ui, server = server)
