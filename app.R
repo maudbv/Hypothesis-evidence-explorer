@@ -4,7 +4,6 @@
 
 #### TODO
 # improve page layout : with sub plots for sub hyps
-# sort problem of repeated study names for enemy release for instance
 
 # Load packages ####
 library(shiny)
@@ -39,7 +38,7 @@ source("resources/functions/app_helper.R")
 source("resources/functions/plot_chrono.R")
 source("resources/functions/plot_piechart.R")
 source("resources/functions/plot_barplot.R")
-
+source("resources/functions/plot_piechart_overview.R")
 
 
 # User Interface ####
@@ -51,16 +50,11 @@ ui <- bootstrapPage(
              windowTitle = "Exploring hypotheses in Invasion Biology",
              
              
-             # # First page: dashboard for all hypotheses
-             # tabPanel("Overview of hypotheses",
-             #         fluidRow(
-             #           column(5,
-             #             h3(textOutput("hyp_description")),
-             #             plotlyOutput('support_piechart', height = "200px")
-             #               )
-             #             )
-             #         ),
-             #              
+             # First page: dashboard for all hypotheses
+             tabPanel("Overview of hypotheses",
+                         plotOutput('overview_piechart', height = "800px")
+                     ),
+
              # second page: Interactive exploration of evidence supporting individual hyps
              tabPanel("Evidence for each hypothesis",
                       sidebarLayout(
@@ -169,9 +163,8 @@ ui <- bootstrapPage(
 server <- function(input, output, session) {
   
 # overview figure
-  output$overview_piechart <- renderPlotly( {
-    req(total_df())
-    plot_piechart(total_df())
+  output$overview_piechart <- renderPlot( {
+    plot_piechart_overview (total_df)
   })
   
  # Conditional filter selection

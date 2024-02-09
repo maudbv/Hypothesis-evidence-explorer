@@ -6,7 +6,8 @@ library(ggplot2)
 hi_colors <- data.frame(
   col_names = c("Supported","Undecided","Questioned","bluetext"),
   cols = c("#5DEDB7","#DFDBD7","#CC6D7B","#27596B"))
-scale_fill_manual(values = c("#5DEDB7","#DFDBD7","#CC6D7B","#27596B")))
+
+scale_col = scale_fill_manual(values = c("#5DEDB7","#DFDBD7","#CC6D7B","#27596B"))
 
 # # Fonts # not working for now
 # font_add("Work Sans",
