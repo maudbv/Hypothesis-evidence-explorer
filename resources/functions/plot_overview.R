@@ -62,6 +62,12 @@ data = df %>%
 data = left_join(tibble(hypothesis = hyp_vec), data, by = "hypothesis")
 data[is.na(data)] <- 0
 
+data$text_Supported = paste(round(data$fraction_Supported*100, digits = 2),
+                  '% (',data$n_Supported,')', sep = "")
+data$text_Undecided = paste(round(data$fraction_Undecided*100, digits = 2),
+                          '% (',data$n_Undecided,')', sep = "")
+data$text_Questioned = paste(round(data$fraction_Questioned*100, digits = 2),
+                          '% (',data$n_Questioned,')', sep = "")
 
 fig <- plot_ly(data, type = 'bar',orientation = 'h') %>%
   add_trace( x = ~ n_Supported,

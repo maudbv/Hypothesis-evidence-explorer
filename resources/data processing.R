@@ -182,6 +182,7 @@ total_df$Habitat <- str_replace_all(str_replace_all(string = total_df$Habitat,
                                             pattern = "/",replacement = ","),
                                     pattern = " and ", replacement = ",")
 total_df$Habitat[which(total_df$Habitat=="x")]  <-  "undetermined"
+total_df$Habitat[is.na(total_df$Habitat)] <-  "undetermined"
 
 # Group "Brackishwater" with freshwater research for simplification (and because represented by only a few studies )
 total_df$Habitat <- str_replace_all(string = total_df$Habitat, 

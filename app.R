@@ -81,7 +81,9 @@ ui <- bootstrapPage(
                    HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">This is a project of the Hi Knowledge initiative</a>'),
                    tags$br(),
                    tags$a(href="https://hi-knowledge.org/", "hi-knowledge.org")
-                 ), style = 'max-width: 800px;'),
+                 ),
+                 style = 'max-width: 900px;'
+                 ),
                
                
                mainPanel(
