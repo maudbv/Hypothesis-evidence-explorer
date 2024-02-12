@@ -217,3 +217,23 @@ hyp_labels <- data.frame(old_label = unique(total_df$hypothesis),
                                        "Limiting similarity hypothesis")
 )
 total_df$hypothesis <- hyp_labels$new_label[match(total_df$hypothesis_old, hyp_labels$old_label)]
+
+# list of hyps ordered by support
+
+df <- total_df %>% 
+  group_by(hypothesis) %>% 
+  count(support_for_hypothesis, sort = FALSE, .drop = FALSE) %>% 
+  mutate(
+    total = sum(n),
+    fraction = n/total,
+  )
+
+library(tidyr)
+  data = df %>%
+    pivot_wider( names_from = c(support_for_hypothesis),
+                 id_cols = hypothesis,
+                 values_from = c(fraction,n)) %>%
+    arrange(fraction_Supported, desc(fraction_Questioned),.by_group = FALSE)
+
+
+hyp_vec <- data$hypothesis

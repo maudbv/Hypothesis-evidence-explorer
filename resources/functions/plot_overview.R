@@ -6,7 +6,7 @@ plot_overview <-  function(df = total_df) {
   library(ggplot2)
   library(dplyr)
 
-  df <- total_df %>% 
+  df <-df %>% 
     group_by(hypothesis) %>% 
     count(support_for_hypothesis, sort = FALSE, .drop = FALSE) %>% 
     mutate(
@@ -54,6 +54,13 @@ pivot_wider( names_from = c(support_for_hypothesis),
              values_from = c(fraction,n)) %>%
   arrange(fraction_Supported, desc(fraction_Questioned),.by_group = FALSE)
 
+data = df %>%
+  pivot_wider( names_from = c(support_for_hypothesis), 
+               id_cols = hypothesis,
+               values_from = c(fraction,n)) 
+
+data = left_join(tibble(hypothesis = hyp_vec), data, by = "hypothesis")
+data[is.na(data)] <- 0
 
 
 fig <- plot_ly(data, type = 'bar',orientation = 'h') %>%
@@ -70,16 +77,18 @@ fig <- plot_ly(data, type = 'bar',orientation = 'h') %>%
              marker = list(color = hi_colors$cols[3]),
              name = "Questioning")%>%
   layout(barmode = 'stack',
-         xaxis = list(title = "Number of studies"),
-         yaxis = list(title =""),
-         title = list(text = "Evidence for ten major hypotheses in Invasion Biology",
+         margin = list(t = 80, pad = 10),
+         xaxis = list(title = "Number of studies" ),
+         yaxis = list(title ="",
+                      tickangle=0, 
+                      tickfont = list(color='black', size=14)),
+         title = list(text = "Ten major hypotheses",
                       font = list(size = 20),
-                      pad = list(b = 0, l = 1, r = 1, t= 1),
+                      pad = list(b = 30, l = 1, r = 1, t= 1),
                       x = 0.01,
                       y = 0.95),
          legend =  list(text = 'Evidence for the hypothesis'),
-         showlegend = TRUE,
-         margin = 0.01
+         showlegend = TRUE
   )
   
   return(fig)

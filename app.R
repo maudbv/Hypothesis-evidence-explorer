@@ -45,130 +45,145 @@ ui <- bootstrapPage(
              collapsible = TRUE,
              HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">Evidence for hypotheses in Invasion Biology</a>'),
              id="nav",
-             windowTitle = "Exploring hypotheses in Invasion Biology",
+             windowTitle = "Hypotheses in Invasion Biology",
              
              
-             # First page: dashboard for all hypotheses
-             tabPanel("Overview of hypotheses",
-                      div(plotlyOutput('overview_chart', height = "800px"), style = 'max-width: 1200px;'),
-                      tags$head(tags$style(type="text/css", ".container-fluid {  max-width: 1200px; /* or 950px */}"))
-                     ),
-
              # second page: Interactive exploration of evidence supporting individual hyps
-             tabPanel("Evidence for each hypothesis",
-                      sidebarLayout(
-                        sidebarPanel(
-                          
-                          "Explore the evidence available for major hypotheses in Invasion Biology.
+             #  tabPanel("Evidence of support",
+             sidebarLayout(
+               div(
+                 sidebarPanel(
+                   
+                   "Explore the evidence available for major hypotheses in Invasion Biology.
                           You can filter studies by taxa, habitats or research method",
-                          tags$br(),
-                          tags$br(),
-                          selectInput('hyp', 'Select a hypothesis',
-                                      c(unique(total_df$hypothesis))),
-                          
-                          pickerInput(inputId = 'taxa',
-                                      'Select a taxonomic group',
-                                      choices = taxa_groups,
-                                      multiple = TRUE,
-                                      selected = taxa_groups,
-                                      options = list(`actions-box` = TRUE,
-                                                     `none-selected-text` = "Please make a selection!")
-                          ),
-                          
-                          uiOutput("habitat_selector"), 
-                          
-                          uiOutput("method_selector"),
-                          
-                          
-                          HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">This is a project of the Hi Knowledge initiative</a>'),
-                          tags$br(),
-                          tags$a(href="https://hi-knowledge.org/", "hi-knowledge.org")
-                        )
-                        ,
-                        
-                       
-                        mainPanel(
-                          tabsetPanel(
-                          
-                            # Panel 1: support for the hypothesis
-                           tabPanel("Support for the hypothesis",
-                                    div(
-                                      tags$br(),
-                                    h3(textOutput("hyp_description")),
-                                    fluidRow(
-                                      column(plotlyOutput('support_piechart', height = "200px"),
-                                             width = 5),
-                                      column( p(textOutput("support_summary"), 
-                                                style="text-align:left;color:#27596B;padding:15px;border-radius:10px"),
-                                              width = 5)
-                                    ),
-                                    fluidRow(plotOutput('chronology'),
-                                             width = "95%",
-                                             height = "100%"),
-                                    tags$br(),
-                                    style = 'max-width: 1200px;'
-                                    )
-                                    
-                           ),
-                           
-                           # Panel 2: Filtered data table
-                           tabPanel("Distribution",  
-                                   div(  
-                                    fluidRow( 
-                                      column(plotlyOutput("support_habitats"),
-                                             width = 10,
-                                             height = 5)),
-                                    fluidRow(
-                                      column( plotlyOutput("support_methods"),  
-                                              height = 5,
-                                              width = 10)),
-                                    fluidRow(
-                                      column(plotlyOutput("support_taxa"),
-                                             width = 10,
-                                             height = 5)),
-                                    fluidRow(
-                                      column(plotlyOutput("support_continents"),
-                                             width = 10,
-                                             height = 5)),
-                                    tags$br(),
-                                    style = 'max-width: 1200px;'
-                                   )
-                           ),
-                           
-                           # Panel 2: Filtered data table
-                           tabPanel("Data",  
-                                    
-                           div(
-                             DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
-                             ,
-                             style = 'max-width: 10000px;'
-                           )
-                           )
-                          )
-                        )
-                      )
+                   tags$br(),
+                   tags$br(),
+                   selectInput(inputId = 'hyp',
+                               label = 'Select a hypothesis',
+                               choices =  c("All",unique(total_df$hypothesis)),
+                               multiple = FALSE,
+                               selected = "All"),
+                   
+                   pickerInput(inputId = 'taxa',
+                               'Select a taxonomic group',
+                               choices = taxa_groups,
+                               multiple = TRUE,
+                               selected = taxa_groups,
+                               options = list(`actions-box` = TRUE,
+                                              `none-selected-text` = "Please make a selection!")
+                   ),
+                   
+                   uiOutput("habitat_selector"), 
+                   
+                   uiOutput("method_selector"),
+                   
+                   
+                   HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">This is a project of the Hi Knowledge initiative</a>'),
+                   tags$br(),
+                   tags$a(href="https://hi-knowledge.org/", "hi-knowledge.org")
+                 ), style = 'max-width: 800px;'),
+               
+               
+               mainPanel(
+                 tabsetPanel(
+                   tabPanel("Overview",
+                            div(plotlyOutput('overview_chart', height = "800px"), style = 'max-width: 1200px;'),
+                            tags$head(tags$style(type="text/css", ".container-fluid {  max-width: 1600px; /* or 950px */}"))
+                   ),
+                   
+                   
+                   # Panel 1: support for the hypothesis
+                   tabPanel("Focus",
+                            div(
+                              tags$br(),
+                              h3(textOutput("hyp_description")),
+                              fluidRow(
+                                column(plotlyOutput('support_piechart', height = "200px"),
+                                       width = 5),
+                                column( p(textOutput("support_summary"), 
+                                          style="text-align:left;color:#27596B;padding:15px;border-radius:10px"),
+                                        width = 5)
+                              ),
+                              fluidRow(plotOutput('chronology'),
+                                       width = "95%",
+                                       height = "100%"),
+                              tags$br(),
+                              style = 'max-width: 1200px;'
+                            )
+                            
+                   ),
+                   
+                   # Panel 2: Filtered data table
+                   tabPanel("Distribution",  
+                            div(  
+                              fluidRow( 
+                                column(plotlyOutput("support_habitats"),
+                                       width = 10,
+                                       height = 5)),
+                              fluidRow(
+                                column( plotlyOutput("support_methods"),  
+                                        height = 5,
+                                        width = 10)),
+                              fluidRow(
+                                column(plotlyOutput("support_taxa"),
+                                       width = 10,
+                                       height = 5)),
+                              fluidRow(
+                                column(plotlyOutput("support_continents"),
+                                       width = 10,
+                                       height = 5)),
+                              tags$br(),
+                              style = 'max-width: 1600px;'
+                            )
+                   ),
+                   
+                   # Panel 2: Filtered data table
+                   tabPanel("Data",  
+                            
+                            div(
+                              DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
+                              ,
+                              style = 'max-width: 2000px;'
+                            )
+                   )
+                 )
+               )
              ),
-           
+             #),
+             
              # Third page: about the project
-             tabPanel("About the project",
-                      'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.')
+            hr(),
+               div(
+                  'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
+                  tags$br(),
+                  tags$br(),
+                  style = 'padding: 20;max-width: 1600px;'
+                  )
+             
   )
 )
-
-
-# Server:   ####
+  
+  # Server:   ####
 
 server <- function(input, output, session) {
   
-# overview figure
-  output$overview_chart <- renderPlotly( {
-    plot_overview (total_df)
-  })
+
   
  # Conditional filter selection
+  
+
+  hyp_filter <- reactive({
+    req(input$hyp)
+    total_df %>% 
+      { if (! "All" %in% input$hyp) {
+        dplyr::filter(.,hypothesis == input$hyp)} else {.} 
+      }
+  })
+  
     hyp_taxa <- reactive({
+      req(hyp_filter())
       req(input$taxa)
-      filter(total_df, hypothesis == input$hyp) %>% 
+      hyp_filter() %>%
         { if (! "All" %in% input$taxa) {
           dplyr::filter(., .detect_items(taxa_group, input$taxa))} else {.} 
         }
@@ -210,18 +225,21 @@ server <- function(input, output, session) {
     return(round(counts$n[which(counts$support_for_hypothesis == "Supported")]/sum(counts$n)*100,2))
   })
   
-  # Plot chronology figure
- 
-  # output$chronology <- renderPlotly( {
-  #   req(filtered_df())
-  #   plot_chrono(filtered_df())
-  # })
   
+  
+  # overview figure
+  output$overview_chart <- renderPlotly( {
+    req(filtered_df())
+    plot_overview (filtered_df())
+  })
+  
+  # Plot chronology figure
   output$chronology <- renderPlot( {
     req(filtered_df())
     plot_chrono(filtered_df())
   })
   
+  # hyp piechart
   output$support_piechart <- renderPlotly( {
     req(filtered_df())
     plot_piechart(filtered_df())
@@ -229,17 +247,36 @@ server <- function(input, output, session) {
   
   # comments
   output$hyp_description <- renderText({
-    paste(input$hyp)
+    req(input$hyp)
+    if (input$hyp == "All") {
+      paste("All 10 hypotheses"
+      )
+    } else {
+     paste(input$hyp)
+    }
   })
   
   output$support_summary <- renderText({
-    paste("The hypothesis is supported in ", support_perc(),
-          "% of the ",
-          length(unique(filtered_df()$study)),
-          " studies included in the database."
-          )
+    req(input$hyp)
+    if (! input$hyp == "All") {
+      paste(
+        "The hypothesis is supported in ",
+        support_perc(),
+        "% of the ",
+        length(unique(filtered_df()$study)),
+        " studies included in the database."
+      )
+    } else {
+      paste(
+        "Hypotheses are supported in ",
+        support_perc(),
+        "% of the ",
+        length(unique(filtered_df()$study)),
+        " studies included in the database."
+        )
+    }
   })
-  
+      
   # Distribution
   output$support_habitats <- renderPlotly( {
     req(filtered_df())
@@ -283,7 +320,7 @@ server <- function(input, output, session) {
   # Data table
   output$filtered_data = DT::renderDT({
     req(filtered_df())
-    display_columns <- c("support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date") 
+    display_columns <- c("support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date", "hypothesis") 
     df <-  as.data.frame(filtered_df())
     rownames(df) <- df$index
     df <-  df[, display_columns]
