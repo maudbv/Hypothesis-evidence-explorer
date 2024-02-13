@@ -89,8 +89,7 @@ ui <- bootstrapPage(
                mainPanel(
                  tabsetPanel(
                    tabPanel("Overview",
-                            div(plotlyOutput('overview_chart', height = "800px"), style = 'max-width: 1200px;'),
-                            tags$head(tags$style(type="text/css", ".container-fluid {  max-width: 1600px; /* or 950px */}"))
+                            div(plotlyOutput('overview_chart', height = "600px"), style = 'max-width: 1200px;max-height: 1200px')
                    ),
                    
                    
@@ -107,7 +106,7 @@ ui <- bootstrapPage(
                                         width = 5)
                               ),
                               fluidRow(plotOutput('chronology'),
-                                       width = "95%",
+                                       width = "90%",
                                        height = "100%"),
                               tags$br(),
                               style = 'max-width: 1200px;'
@@ -119,23 +118,21 @@ ui <- bootstrapPage(
                    tabPanel("Distribution",  
                             div(  
                               fluidRow( 
-                                column(plotlyOutput("support_habitats"),
-                                       width = 10,
-                                       height = 5)),
-                              fluidRow(
-                                column( plotlyOutput("support_methods"),  
-                                        height = 5,
-                                        width = 10)),
-                              fluidRow(
-                                column(plotlyOutput("support_taxa"),
-                                       width = 10,
-                                       height = 5)),
-                              fluidRow(
-                                column(plotlyOutput("support_continents"),
-                                       width = 10,
-                                       height = 5)),
+                                column(6,
+                                       plotlyOutput("support_habitats", height = "300px")
+                                       ),
+                                column(6, 
+                                       plotlyOutput("support_methods", height = "300px")
+                                       ),
+                                column(6,
+                                       plotlyOutput("support_taxa", height = "400px")
+                                       ),
+                                column(6,
+                                       plotlyOutput("support_continents", height = "400px")
+                                       )
+                                ),
                               tags$br(),
-                              style = 'max-width: 1600px;'
+                              style = 'max-width: 1300px;'
                             )
                    ),
                    

@@ -1,11 +1,11 @@
 # radial plot splitting the results by groups
 
 plot_barplot <-
-  function(df,
+  function(df = total_df,
            group_col = "Habitat_list",
            grouping = habitat_groups,
            legend.show = TRUE,
-           title_text  = NULL) {
+           title_text  = "Habitat") {
     library(plotly)
     
     names(df)[names(df) == group_col] <-  "grouping_col"
@@ -43,32 +43,45 @@ plot_barplot <-
     
     fig <- plot_ly(data, type = 'bar',orientation = 'h')
     
-   for (i in 1:3) {
-     if (categories[i] %in% names(data)) {
-     fig <-   add_trace(fig, 
-        x = as.formula(paste("~",categories[i])),
-        y = ~ group,
-        type = 'bar', 
-        orientation = 'h',
-        name = titles[i],
-        marker = list(color = hi_colors$cols[i])
-      )
-     }
-     }
-  
-      
-      fig <-  layout(fig,
-          barmode = 'stack',
-          title = list(text = title_text,
-                       font = list(size = 20),
-                       pad = list(b = 0, l = 1, r = 1, t= 1),
-                       x = 0.05,
-                       y = 0.92),
-          legend =  list(text = 'Evidence for the hypothesis'),
-          showlegend = legend.show,
-          margin = 0.01,
-          xaxis = list(title = ""),
-          yaxis = list(title = "")
+    for (i in 1:3) {
+      if (categories[i] %in% names(data)) {
+        
+        fig <-   add_trace(fig, 
+                           x = as.formula(paste("~",categories[i])),
+                           y = ~ group,
+                           type = 'bar', 
+                           name = titles[i],
+                           marker = list(color = hi_colors$cols[i]),
+                           width = .5
         )
+      }
+    }
+    
+    
+    fig <-  layout(fig,
+                   autosize = T,
+                   margin = list(t = 90, pad = 10),
+                   barmode = 'stack',
+                   title = list(text = title_text,
+                                font = list(size = 20),
+                                pad = list(b = 50, l = 1, r = 1, t= 1),
+                                x = 0.05,
+                                y = 0.92),
+                   legend =  list(text = 'Evidence for the hypothesis'),
+                   showlegend = legend.show,
+                   margin = 0.2,
+                   xaxis = list(title = "",
+                                showline = TRUE,
+                                linecolor = 'lightgrey',
+                                linewidth = 1),
+                   yaxis = list(title = "",
+                                showline = FALSE,
+                                linecolor = 'lightgrey',
+                                linewidth = 0)
+    )
+    
     return(fig)
   }
+
+
+(plot_barplot())
