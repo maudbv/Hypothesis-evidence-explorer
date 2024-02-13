@@ -20,12 +20,18 @@ p <- ggplot(df, aes(Study_date, chrono_support,
   scale_colour_manual(values = hi_colors$cols) +
   theme_hiK() + 
   theme(axis.title.x = element_blank(),
-        panel.grid= element_line(colour = "grey80", linetype = "dotted")) +
+        panel.grid = element_line(colour = "grey80",
+                                 linetype = "dotted")) +
   geom_line() +
-  geom_line(aes(Study_date, chrono_hyp), col = "grey", lty = "dashed") +
-  geom_point(aes(size = Number_of_species), alpha = 0.30) + 
+  geom_line(aes(Study_date, chrono_hyp),
+            col = "grey",
+            lty = "dashed") +
+  geom_point(aes(size = Number_of_species),
+             alpha = 0.30) + 
   scale_size(name="Number of taxa", 
-             range = c(1, 30), breaks = c(1, 10,100,1000),limits = c(1,1000)) +
+             range = c(1, 30),
+             breaks = c(1, 10,100,1000),
+             limits = c(1,1000)) +
     xlab("Time") + 
     ylab("Number of studies") #+
  # ggtitle(paste( unique(df$hypothesis), 'hypothesis'))

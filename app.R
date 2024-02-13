@@ -53,9 +53,8 @@ ui <- bootstrapPage(
              sidebarLayout(
                div(
                  sidebarPanel(
-                   
                    "Explore the evidence available for major hypotheses in Invasion Biology.
-                          You can filter studies by taxa, habitats or research method",
+                   You can filter studies by taxa, habitats or research method",
                    tags$br(),
                    tags$br(),
                    selectInput(inputId = 'hyp',
@@ -82,36 +81,32 @@ ui <- bootstrapPage(
                    tags$br(),
                    tags$a(href="https://hi-knowledge.org/", "hi-knowledge.org")
                  ),
-                 style = 'max-width: 900px;'
+                 style = 'max-width:900px;'
                  ),
                
                
                mainPanel(
                  tabsetPanel(
                    tabPanel("Overview",
-                            div(plotlyOutput('overview_chart', height = "600px"), style = 'max-width: 1200px;max-height: 1200px')
+                            div(plotlyOutput('overview_chart', height = "500px"), style = 'max-width: 1200px;'),
+                            tags$br(),
                    ),
                    
                    
                    # Panel 1: support for the hypothesis
                    tabPanel("Focus",
                             div(
-                              tags$br(),
-                              h3(textOutput("hyp_description")),
+                             h5(textOutput("hyp_description")),
                               fluidRow(
-                                column(plotlyOutput('support_piechart', height = "200px"),
+                                column(plotlyOutput('support_piechart', height = "150px"),
                                        width = 5),
                                 column( p(textOutput("support_summary"), 
                                           style="text-align:left;color:#27596B;padding:15px;border-radius:10px"),
                                         width = 5)
                               ),
-                              fluidRow(plotOutput('chronology'),
-                                       width = "90%",
-                                       height = "100%"),
-                              tags$br(),
-                              style = 'max-width: 1200px;'
+                              fluidRow(plotOutput('chronology', height = "350px")),
+                              style = 'max-width: 800px;'
                             )
-                            
                    ),
                    
                    # Panel 2: Filtered data table
@@ -119,20 +114,20 @@ ui <- bootstrapPage(
                             div(  
                               fluidRow( 
                                 column(6,
-                                       plotlyOutput("support_habitats", height = "300px")
+                                       plotlyOutput("support_habitats", height = "200px")
                                        ),
                                 column(6, 
-                                       plotlyOutput("support_methods", height = "300px")
+                                       plotlyOutput("support_methods", height = "200px")
                                        ),
                                 column(6,
-                                       plotlyOutput("support_taxa", height = "400px")
+                                       plotlyOutput("support_taxa", height = "300px")
                                        ),
                                 column(6,
-                                       plotlyOutput("support_continents", height = "400px")
+                                       plotlyOutput("support_continents", height = "300px")
                                        )
                                 ),
                               tags$br(),
-                              style = 'max-width: 1300px;'
+                              style = 'max-width: 1200px;'
                             )
                    ),
                    
@@ -151,12 +146,10 @@ ui <- bootstrapPage(
              #),
              
              # Third page: about the project
-            hr(),
-               div(
-                  'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
+             footer = list(
+               hr(), 'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
                   tags$br(),
-                  tags$br(),
-                  style = 'padding: 20;max-width: 1600px;'
+                  tags$br()
                   )
              
   )
