@@ -1,9 +1,10 @@
 # Shiny app dashboard to explore hypotheses in invasion biology
 # author: Maud Bernard-Verdier
 # source: orkg.org
+# deployed: https://maudbernardverdier.shinyapps.io/Hypothesis-evidence-explorer/
 
-#### TODO
-# improve page layout : with sub plots for sub hyps
+# TODO ####
+# fix the chronology plot for interaction and formatting
 
 # Load packages ####
 library(shiny)
@@ -137,8 +138,9 @@ ui <- bootstrapPage(
                             div(
                               DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
                               ,
-                              style = 'max-width: 2000px;'
-                            )
+                              style = 'max-width: 3000px;'
+                            ),
+                            style = 'max-width: 1200px;'
                    )
                  )
                )
@@ -312,11 +314,12 @@ server <- function(input, output, session) {
   # Data table
   output$filtered_data = DT::renderDT({
     req(filtered_df())
-    display_columns <- c("support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date", "hypothesis") 
+    display_columns <- c("Title","support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date", "hypothesis", "DOI") 
     df <-  as.data.frame(filtered_df())
     rownames(df) <- df$index
     df <-  df[, display_columns]
  datatable(df,
+           rownames = FALSE,
            extensions = 'Buttons',
            options = list(
              dom = 'Bfrtip',
