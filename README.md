@@ -18,7 +18,7 @@ The app proposes to filter the dataset based on:
 
 # Credits
 This app was developed by Maud Bernard-Verdier and funded by the Volkswagen Foundation within the enKORE project (2021-2024).
-This project is part of the Hi Knowledge initiative [hi-knowledge.org]
+This project is part of the Hi Knowledge initiative (https:///hi-knowledge.org)
 
 # License
 All code is shared under MIT license. 
