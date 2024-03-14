@@ -48,6 +48,48 @@ total_df$index <- str_replace_all(total_df$index,"\"","\'")
 total_df$Title <- total_df$publication
 names(total_df) <- stringr::str_replace_all(names(total_df), "\\ ","_")
 
+
+# Add DOI and abstracts
+
+## Read DOI file prepared by Marc Brinner
+doi_abstract <-  read_csv("resources/additional data/hi-k_DOI_title_abstract.csv", show_col_types = FALSE)
+
+dim(doi_abstract) # 954
+length(unique(total_df$Title)) # 961  strange
+
+##homogenize formats
+doi_abstract$Title <- str_replace_all(doi_abstract$Title,"\"","\'")
+
+# correct titles in datasets
+# Merge doi and abstracts with the main table
+lj = left_join(total_df, doi_abstract, by = "Title")
+
+to_be_corrected = select(lj, Title, DOI)%>% filter(is.na(DOI))%>% unique()
+
+to_be_corrected$match <- 
+sapply(to_be_corrected$Title, FUN = function(i) {
+  index = agrep(i, doi_abstract$Title,max.distance =5)
+  if (length(index) > 0) doi_abstract$Title[index] else NA
+})
+
+replaced_titles_indices <- na.omit(match( to_be_corrected$Title,total_df$Title))
+total_df$Title[replaced_titles_indices ] <- to_be_corrected$match[match(total_df$Title[replaced_titles_indices], to_be_corrected$Title)]
+
+# Fix the titles in doi_abstract
+doi_abstract$Title[which(doi_abstract$Title == "Alien flora of Europe: species diversity, temporal trends, geographical patterns and research needs.")] <-
+  "Alien flora of Europe: species diversity, temporal trends, geographical patterns and research needs"
+
+
+# Merge doi and abstracts with the main table
+lj = left_join(total_df, doi_abstract)
+View(select(lj, Title, DOI)%>% filter(is.na(DOI))%>% unique())
+#### TODO still 20 left to correct #######
+
+total_df <- lj
+
+# Make DOIs into links
+# TODO
+
 # Chronological accumulation of studies: ####
 total_df <-   group_by(.data = total_df, hypothesis) %>%
   mutate(chrono_hyp = row_number(Study_date))
@@ -67,7 +109,6 @@ total_df$hypothesis <- str_replace(string = total_df$hypothesis,
                                    replacement = "Biotic resistance")
 
 # check for duplicate rows
-
 total_df$index[which(duplicated(total_df$index))] <- paste( total_df$index[which(duplicated(total_df$index))],
                                                             "a", sep = "")
 
@@ -182,6 +223,7 @@ total_df$Habitat <- str_replace_all(str_replace_all(string = total_df$Habitat,
                                             pattern = "/",replacement = ","),
                                     pattern = " and ", replacement = ",")
 total_df$Habitat[which(total_df$Habitat=="x")]  <-  "undetermined"
+total_df$Habitat[is.na(total_df$Habitat)] <-  "undetermined"
 
 # Group "Brackishwater" with freshwater research for simplification (and because represented by only a few studies )
 total_df$Habitat <- str_replace_all(string = total_df$Habitat, 
@@ -218,6 +260,10 @@ hyp_labels <- data.frame(old_label = unique(total_df$hypothesis),
 )
 total_df$hypothesis <- hyp_labels$new_label[match(total_df$hypothesis_old, hyp_labels$old_label)]
 
+
+
+
+
 # list of hyps ordered by support
 
 df <- total_df %>% 
@@ -228,6 +274,8 @@ df <- total_df %>%
     fraction = n/total,
   )
 
+
+# Get the list of hypotheses
 library(tidyr)
   data = df %>%
     pivot_wider( names_from = c(support_for_hypothesis),

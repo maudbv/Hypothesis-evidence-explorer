@@ -62,6 +62,12 @@ data = df %>%
 data = left_join(tibble(hypothesis = hyp_vec), data, by = "hypothesis")
 data[is.na(data)] <- 0
 
+data$text_Supported = paste(round(data$fraction_Supported*100, digits = 2),
+                  '% (',data$n_Supported,')', sep = "")
+data$text_Undecided = paste(round(data$fraction_Undecided*100, digits = 2),
+                          '% (',data$n_Undecided,')', sep = "")
+data$text_Questioned = paste(round(data$fraction_Questioned*100, digits = 2),
+                          '% (',data$n_Questioned,')', sep = "")
 
 fig <- plot_ly(data, type = 'bar',orientation = 'h') %>%
   add_trace( x = ~ n_Supported,
@@ -77,14 +83,17 @@ fig <- plot_ly(data, type = 'bar',orientation = 'h') %>%
              marker = list(color = hi_colors$cols[3]),
              name = "Questioning")%>%
   layout(barmode = 'stack',
-         margin = list(t = 80, pad = 10),
-         xaxis = list(title = "Number of studies" ),
+         margin = list(t = 40, pad = 10),
+         xaxis = list(title = "Number of studies",
+                      showline = TRUE,
+                      linecolor = 'lightgrey',
+                      linewidth = 1 ),
          yaxis = list(title ="",
                       tickangle=0, 
-                      tickfont = list(color='black', size=14)),
-         title = list(text = "Ten major hypotheses",
-                      font = list(size = 20),
-                      pad = list(b = 30, l = 1, r = 1, t= 1),
+                      tickfont = list(color='black', size=12)),
+         title = list(text = "",
+                      font = list(size = 16),
+                      pad = list(b = 1, l = 1, r = 1, t= 1),
                       x = 0.01,
                       y = 0.95),
          legend =  list(text = 'Evidence for the hypothesis'),

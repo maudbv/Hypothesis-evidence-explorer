@@ -1,9 +1,10 @@
 # Shiny app dashboard to explore hypotheses in invasion biology
 # author: Maud Bernard-Verdier
 # source: orkg.org
+# deployed: https://maudbernardverdier.shinyapps.io/Hypothesis-evidence-explorer/
 
-#### TODO
-# improve page layout : with sub plots for sub hyps
+# TODO ####
+# fix the chronology plot for interaction and formatting
 
 # Load packages ####
 library(shiny)
@@ -53,9 +54,8 @@ ui <- bootstrapPage(
              sidebarLayout(
                div(
                  sidebarPanel(
-                   
                    "Explore the evidence available for major hypotheses in Invasion Biology.
-                          You can filter studies by taxa, habitats or research method",
+                   You can filter studies by taxa, habitats or research method",
                    tags$br(),
                    tags$br(),
                    selectInput(inputId = 'hyp',
@@ -81,59 +81,54 @@ ui <- bootstrapPage(
                    HTML('<a style="text-decoration:none;cursor:default;color:#27596B;" class="active" href="#">This is a project of the Hi Knowledge initiative</a>'),
                    tags$br(),
                    tags$a(href="https://hi-knowledge.org/", "hi-knowledge.org")
-                 ), style = 'max-width: 800px;'),
+                 ),
+                 style = 'max-width:900px;'
+                 ),
                
                
                mainPanel(
                  tabsetPanel(
                    tabPanel("Overview",
-                            div(plotlyOutput('overview_chart', height = "800px"), style = 'max-width: 1200px;'),
-                            tags$head(tags$style(type="text/css", ".container-fluid {  max-width: 1600px; /* or 950px */}"))
+                            div(plotlyOutput('overview_chart', height = "500px"), style = 'max-width: 1200px;'),
+                            tags$br(),
                    ),
                    
                    
                    # Panel 1: support for the hypothesis
                    tabPanel("Focus",
                             div(
-                              tags$br(),
-                              h3(textOutput("hyp_description")),
+                             h5(textOutput("hyp_description")),
                               fluidRow(
-                                column(plotlyOutput('support_piechart', height = "200px"),
+                                column(plotlyOutput('support_piechart', height = "150px"),
                                        width = 5),
                                 column( p(textOutput("support_summary"), 
                                           style="text-align:left;color:#27596B;padding:15px;border-radius:10px"),
                                         width = 5)
                               ),
-                              fluidRow(plotOutput('chronology'),
-                                       width = "95%",
-                                       height = "100%"),
-                              tags$br(),
-                              style = 'max-width: 1200px;'
+                              fluidRow(plotOutput('chronology', height = "350px")),
+                              style = 'max-width: 800px;'
                             )
-                            
                    ),
                    
                    # Panel 2: Filtered data table
                    tabPanel("Distribution",  
                             div(  
                               fluidRow( 
-                                column(plotlyOutput("support_habitats"),
-                                       width = 10,
-                                       height = 5)),
-                              fluidRow(
-                                column( plotlyOutput("support_methods"),  
-                                        height = 5,
-                                        width = 10)),
-                              fluidRow(
-                                column(plotlyOutput("support_taxa"),
-                                       width = 10,
-                                       height = 5)),
-                              fluidRow(
-                                column(plotlyOutput("support_continents"),
-                                       width = 10,
-                                       height = 5)),
+                                column(6,
+                                       plotlyOutput("support_habitats", height = "200px")
+                                       ),
+                                column(6, 
+                                       plotlyOutput("support_methods", height = "200px")
+                                       ),
+                                column(6,
+                                       plotlyOutput("support_taxa", height = "300px")
+                                       ),
+                                column(6,
+                                       plotlyOutput("support_continents", height = "300px")
+                                       )
+                                ),
                               tags$br(),
-                              style = 'max-width: 1600px;'
+                              style = 'max-width: 1200px;'
                             )
                    ),
                    
@@ -143,8 +138,9 @@ ui <- bootstrapPage(
                             div(
                               DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
                               ,
-                              style = 'max-width: 2000px;'
-                            )
+                              style = 'max-width: 3000px;'
+                            ),
+                            style = 'max-width: 1200px;'
                    )
                  )
                )
@@ -152,12 +148,10 @@ ui <- bootstrapPage(
              #),
              
              # Third page: about the project
-            hr(),
-               div(
-                  'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
+             footer = list(
+               hr(), 'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
                   tags$br(),
-                  tags$br(),
-                  style = 'padding: 20;max-width: 1600px;'
+                  tags$br()
                   )
              
   )
@@ -320,11 +314,12 @@ server <- function(input, output, session) {
   # Data table
   output$filtered_data = DT::renderDT({
     req(filtered_df())
-    display_columns <- c("support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date", "hypothesis") 
+    display_columns <- c("Title","support_for_hypothesis","Investigated_species","Habitat","Research_Method", "continents","Study_date", "hypothesis", "DOI") 
     df <-  as.data.frame(filtered_df())
     rownames(df) <- df$index
     df <-  df[, display_columns]
  datatable(df,
+           rownames = FALSE,
            extensions = 'Buttons',
            options = list(
              dom = 'Bfrtip',
