@@ -5,10 +5,10 @@ account: maudbernardverdier
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11211850
-bundleId: 8250465
+bundleId: 8375665
 url: https://maudbernardverdier.shinyapps.io/Hypothesis-evidence-explorer/
-when: 1707830075.10765
-lastSyncTime: 1707830075.10767
+when: 1710503252.28148
+lastSyncTime: 1710503252.28149
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData|edges_3L.csv|example_app.R/Untitled.R|jsonData.json|nodes_3L.csv
+ignoredFiles: edges_3L.csv|example_app.R/Untitled.R|jsonData.json|nodes_3L.csv
