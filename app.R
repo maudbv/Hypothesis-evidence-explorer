@@ -7,28 +7,27 @@
 # fix the chronology plot for interaction and formatting
 
 # Load packages ####
-library(shiny)
+
+#library(tidyverse)
+library(dplyr)
+library(readr)
+
+#library(shiny)
+require(shinyWidgets)
+#require(shinyjs)
+require(shinythemes)
+#library(sysfonts)
+
 library(ggplot2)
 library(plotly)
-library(sysfonts)
-library(dplyr)
-require(shinyWidgets)
-require(shinyjs)
-require(shinythemes)
 library(DT)
-library(readr)
-library(igraph)
-library(networkD3)
-library(ggraph)
-library(tidyverse)
-library(visNetwork)
 
-# import and pre-process data ####
-source("resources/Hypothesis index.R")
-source('resources/data processing.R')
+#### import and pre-process data - RUN ONCE ####
+ source('resources/scripts/process_HK.R')
+# deprecated: source("resources/scripts/Hypothesis index.R") 
 
-# Get colours and style themes ####
-source("resources/ggplot_HiK_theme.R")
+# # Get colours and style themes ####
+ source("resources/scripts/ggplot_HiK_theme.R")
 
 # Load custom functions ####
 source("resources/functions/app_helper.R")
@@ -38,6 +37,7 @@ source("resources/functions/plot_chrono.R")
 source("resources/functions/plot_piechart.R")
 source("resources/functions/plot_barplot.R")
 source("resources/functions/plot_overview.R")
+
 
 
 # User Interface ####
@@ -137,17 +137,16 @@ ui <- bootstrapPage(
                             
                             div(
                               DT::DTOutput("filtered_data") #TODO update type of table output for more interaction +add years
-                              ,
-                              style = 'max-width: 3000px;'
-                            ),
-                            style = 'max-width: 1200px;'
+                              ,style = 'max-width: 3000px;'
+                            )
+                          
                    )
                  )
                )
              ),
              #),
              
-             # Third page: about the project
+             # footer: about the project
              footer = list(
                hr(), 'This interactive website was built by Maud Bernard-Verdier using R shiny, with data from the 2018 book "Invasion biology: hypotheses and evidence", by Jeschke & Heger (eds), and currently curated by the', tags$a(href="https://orkg.org", " Open Research Knowledge Graph project"),'. This work was produced within the enKORE project, a', tags$a(href="https://hi-knowledge.org/", "Hi Knowledge initiative") ,' funded by the Volkswagen Stiftung, Germany.',
                   tags$br(),
